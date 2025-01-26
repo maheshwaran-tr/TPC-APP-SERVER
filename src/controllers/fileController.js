@@ -32,12 +32,20 @@ const uploadFile = async (req, res, next) => {
       return next(err);
     }
 
-    const { buffer, originalname, mimetype } = req.file;
+    const fileName = req.params.fileName;
 
-    const fileName = getFileName(folderContext, originalname);
+    if (!fileName) {
+      const err = new Error("File name is required");
+      err.status = 400;
+      return next(err);
+    }
 
-    const fileData = await fileService.uploadFile(buffer, fileName, mimetype);
-    const fileUrl = fileService.getFileUrl(fileName);
+    const { buffer, mimetype } = req.file;
+
+    const fullFileName = getFileName(folderContext, fileName);
+
+    const fileData = await fileService.uploadFile(buffer, fullFileName, mimetype);
+    const fileUrl = fileService.getFileUrl(fullFileName);
 
     res.status(200).json({
       message: "File uploaded successfully!",
