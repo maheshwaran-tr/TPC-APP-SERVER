@@ -64,8 +64,9 @@ model Student {
   current_arrears    Int           @default(0)
   history_of_arrears Int           @default(0)
   resume_url         String?
-  profile_url        String?
+  profile_url        String?       @default("https://pbywhmrgjtkosnsdunvc.supabase.co/storage/v1/object/public/sit-tpc/profile/default.png?")
   section            String?       @default("A")
+  batch              Int?
   applications       Application[]
   department         Department    @relation(fields: [dept_id], references: [dept_id])
   user               User          @relation(fields: [user_id], references: [user_id])
