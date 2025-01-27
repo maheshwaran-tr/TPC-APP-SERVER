@@ -2,7 +2,7 @@ import staffService from "../services/staffService.js";
 
 const getAllStaffs = async (req, res, next) => {
   try {
-    const staffs = await staffService.getAllStaffs();
+    const staffs = await staffService.allStaffs();
     res.status(200).json(staffs);
   } catch (error) {
     const err = new Error(
