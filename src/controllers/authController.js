@@ -24,7 +24,11 @@ const login = async (req, res, next) => {
     }
 
     // Compare password with hashed password
-    const isPasswordValid = bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    console.log(`password: ${password}`);
+    console.log(`userpass: ${user.password}`);
+
 
     if (!isPasswordValid) {
       const err = new Error("Invalid password");
@@ -43,6 +47,7 @@ const login = async (req, res, next) => {
     err.statusCode = 401;
     next(err);
   }
+
 };
 
 const register = async (req, res, next) => {
