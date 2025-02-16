@@ -38,38 +38,39 @@ model User {
 }
 
 model Student {
-  student_id         Int           @id @default(autoincrement())
-  user_id            Int           @unique
-  rollno             String?
-  regno              String?
-  name               String
-  dept_id            Int
-  gender             String?
-  father_name        String?
-  dob                String?
-  score_10th         Int?
-  board_10th         String?
-  yop_10th           Int?
-  score_12th         Int?
-  board_12th         String?
-  yop_12th           Int?
-  score_diploma      Int?
-  branch_diploma     String?
-  yop_diploma        Int?
-  cgpa               Float?
-  phone_number       String?
-  email              String?
-  placement_willing  String?
-  created_at         DateTime      @default(now())
-  current_arrears    Int           @default(0)
-  history_of_arrears Int           @default(0)
-  resume_url         String?
-  profile_url        String?       @default("https://pbywhmrgjtkosnsdunvc.supabase.co/storage/v1/object/public/sit-tpc/profile/default.png?")
-  section            String?       @default("A")
-  batch              Int?
-  applications       Application[]
-  department         Department    @relation(fields: [dept_id], references: [dept_id])
-  user               User          @relation(fields: [user_id], references: [user_id])
+  student_id          Int                   @id @default(autoincrement())
+  user_id             Int                   @unique
+  rollno              String?
+  regno               String?
+  name                String
+  dept_id             Int
+  gender              String?
+  father_name         String?
+  dob                 String?
+  score_10th          Int?
+  board_10th          String?
+  yop_10th            Int?
+  score_12th          Int?
+  board_12th          String?
+  yop_12th            Int?
+  score_diploma       Int?
+  branch_diploma      String?
+  yop_diploma         Int?
+  cgpa                Float?
+  phone_number        String?
+  email               String?
+  placement_willing   String?
+  created_at          DateTime              @default(now())
+  current_arrears     Int                   @default(0)
+  history_of_arrears  Int                   @default(0)
+  resume_url          String?
+  profile_url         String?               @default("https://pbywhmrgjtkosnsdunvc.supabase.co/storage/v1/object/public/sit-tpc/profile/default.png?")
+  section             String?               @default("A")
+  batch               Int?
+  applications        Application[]
+  department          Department            @relation(fields: [dept_id], references: [dept_id])
+  user                User                  @relation(fields: [user_id], references: [user_id])
+  training_attendance training_attendance[]
 }
 
 model Staff {
@@ -149,4 +150,24 @@ enum UserRole {
   student
   staff
   admin
+}
+
+model Training {
+  training_id    Int        @id @default(autoincrement())
+  name           String
+  description    String
+  training_dates DateTime[]
+  created_at     DateTime   @default(now())
+
+  training_attendance training_attendance[]
+}
+
+// Create a model that is used to keep track of the students in the trainings
+model training_attendance {
+  attendance_id Int      @id @default(autoincrement())
+  student_id    Int
+  training_id   Int
+  created_at    DateTime @default(now())
+  student       Student  @relation(fields: [student_id], references: [student_id])
+  training      Training @relation(fields: [training_id], references: [training_id])
 }

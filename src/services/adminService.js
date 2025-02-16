@@ -1,6 +1,7 @@
 import prisma from "../config/prismaClient.js";
 
 
+
 const getByUserId = async (user_id) => {
   try {
     const admin = await prisma.admin.findUnique({
