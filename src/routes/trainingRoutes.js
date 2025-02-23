@@ -11,6 +11,7 @@ router.get("/:id", trainingController.getTrainingById);
 
 // Route to add a new training
 router.post("/", trainingController.addTraining);
+router.post("/attandance", trainingController.updateAttandances);
 
 // Route to update a training
 router.put("/:id", trainingController.updateTraining);

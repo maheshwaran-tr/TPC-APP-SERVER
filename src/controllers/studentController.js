@@ -96,6 +96,17 @@ const updateByStudentId = async (req, res, next) => {
   }
 };
 
+const updateStudents = async (req, res, next) => {
+  try {
+    const students = req.body;
+    const updatedStudent = await studentService.updateStudents(students);
+    res.json(updatedStudent);
+  } catch (error) {
+    const err = new Error(error.message);
+    next(err);
+  }
+};
+
 const deleteByStudentId = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
@@ -116,6 +127,7 @@ export default {
   getStudentsByPlacementWilling,
   getStudentsByDept,
   createStudent,
+  updateStudents,
   updateByStudentId,
   deleteByStudentId,
 };

@@ -4,8 +4,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url       = env("AWS_DATABASE_URL")
 }
 
 model Department {
@@ -167,6 +166,8 @@ model training_attendance {
   attendance_id Int      @id @default(autoincrement())
   student_id    Int
   training_id   Int
+  training_date DateTime?
+  status        String
   created_at    DateTime @default(now())
   student       Student  @relation(fields: [student_id], references: [student_id])
   training      Training @relation(fields: [training_id], references: [training_id])

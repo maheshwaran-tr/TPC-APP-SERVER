@@ -14,6 +14,7 @@ router.get("/byPlacementWilling/:placementWilling", studentController.getStudent
 router.post("/", studentController.createStudent);
 
 router.put("/:id", studentController.updateByStudentId);
+router.put("/", studentController.updateStudents);
 
 router.delete("/:id", studentController.deleteByStudentId);
 

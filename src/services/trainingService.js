@@ -8,11 +8,7 @@ const getAllTrainings = async () => {
   try {
     const trainings = await prisma.training.findMany({
       include: {
-        training_attendance: {
-          include: {
-            student: true,
-          },
-        },
+        training_attendance: true,
       },
     });
     return trainings;
@@ -94,11 +90,60 @@ const deleteTraining = async (id) => {
   }
 };
 
+const updateAttandance = async (attendances) => {
+  console.log(attendances);
+  try {
+    // Use Promise.all to handle all attendance records concurrently
+    const updatedAttendances = await Promise.all(
+      attendances.map(async (attendance) => {
+        const { training_id, student_id,training_date, status } = attendance;
+
+        // Check if the attendance record already exists
+        const existingAttendance = await prisma.training_attendance.findFirst({
+          where: {
+            training_id,
+            student_id,
+            training_date: {
+              equals: new Date(training_date).setHours(0, 0, 0, 0), // Normalize to start of the day
+            },
+          },
+        });
+
+        if (existingAttendance) {
+          // Update the existing record
+          return await prisma.training_attendance.update({
+            where: {
+              attendance_id: existingAttendance.attendance_id, // Use the unique attendance_id to update
+            },
+            data: {
+              status, // Update the status
+            },
+          });
+        } else {
+          // Insert a new record
+          return await prisma.training_attendance.create({
+            data: {
+              training_id,
+              student_id,
+              training_date,
+              status,
+            },
+          });
+        }
+      })
+    );
+
+    return updatedAttendances; // Return the list of updated or inserted attendances
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 export default {
   getAllTrainings,
   getTrainingById,
   addTraining,
+  updateAttandance,
   updateTraining,
   deleteTraining,
 };

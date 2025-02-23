@@ -81,11 +81,12 @@ const createStaff = async (staff) => {
 
 const updateByStaffId = async (id, staff) => {
   try {
+    const {staff_id, department,user, ...data} = staff;
     const updatedStaff = await prisma.staff.update({
       where: {
-        staff_id: id,
+        staff_id: staff_id,
       },
-      data: staff,
+      data: data,
     });
     return updatedStaff;
   } catch (error) {

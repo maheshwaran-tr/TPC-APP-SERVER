@@ -6,7 +6,9 @@ const getAllTrainings = async (req, res, next) => {
     const trainings = await trainingService.getAllTrainings();
     res.status(200).json(trainings);
   } catch (error) {
-    const err = new Error(`Error while fetching all trainings - ${error.message}`);
+    const err = new Error(
+      `Error while fetching all trainings - ${error.message}`
+    );
     err.statusCode = 500;
     next(err);
   }
@@ -86,10 +88,31 @@ const deleteTraining = async (req, res, next) => {
   }
 };
 
+const updateAttandances = async (req, res, next) => {
+  console.log("Here");
+  const attendances = req.body;
+  console.log(attendances);
+  try {
+    // Call the service to update or insert the attendance records
+    const updatedAttendances =
+      await trainingService.updateAttandance(
+        attendances
+      );
+    res.status(200).json(updatedAttendances);
+  } catch (error) {
+    const err = new Error(
+      `Error while updating/inserting attendances - ${error.message}`
+    );
+    err.statusCode = 500;
+    next(err);
+  }
+};
+
 export default {
   getAllTrainings,
   getTrainingById,
   addTraining,
   updateTraining,
+  updateAttandances,
   deleteTraining,
 };

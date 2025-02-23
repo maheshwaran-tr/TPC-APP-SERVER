@@ -7,6 +7,11 @@ const getAllStudents = async () => {
       include: {
         department: true,
         applications: true,
+        training_attendance:{
+          include:{
+            training:true
+          }
+        }
       },
     });
     return students;
@@ -24,6 +29,11 @@ const getByRollno = async (rollno) => {
       include: {
         department: true,
         applications: true,
+        training_attendance:{
+          include:{
+            training:true
+          }
+        }
       },
     });
     return student;
@@ -41,6 +51,11 @@ const getByUserId = async (userId) => {
       include: {
         department: true,
         applications: true,
+        training_attendance:{
+          include:{
+            training:true
+          }
+        }
       },
     });
     return student;
@@ -58,6 +73,11 @@ const getByStudentId = async (studentId) => {
       include: {
         department: true,
         applications: true,
+        training_attendance:{
+          include:{
+            training:true
+          }
+        }
       },
     });
     return student;
@@ -75,6 +95,7 @@ const getStudentsByDept = async (deptId) => {
       include: {
         department: true,
         applications: true,
+        training_attendance:true
       },
     });
     return students;
@@ -92,6 +113,7 @@ const getStudentsByPlacementWilling = async (placementWilling) => {
       include: {
         department: true,
         applications: true,
+        training_attendance:true
       },
     });
     return students;
@@ -129,13 +151,36 @@ const updateByRollno = async (rollno, student) => {
 
 const updateByStudentId = async (studentId, student) => {
   try {
+    const { applications, department, ...studentData } = student;
     const updatedStudent = await prisma.student.update({
       where: {
         student_id: studentId,
       },
-      data: student,
+      data: studentData,
     });
     return updatedStudent;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const updateStudents = async (students) => {
+  try {
+    // Use Promise.all to update all students concurrently
+    const updatedStudents = await Promise.all(
+      students.map(async (student) => {
+        const { applications, department, ...studentData } = student;
+
+        // Update each student individually
+        return await prisma.student.update({
+          where: {
+            student_id: student.student_id, // Use the student_id to identify the student
+          },
+          data: studentData, // Update only non-relational fields
+        });
+      })
+    );
+    return updatedStudents; // Return the list of updated students
   } catch (error) {
     throw new Error(error.message);
   }
@@ -177,6 +222,7 @@ export default {
   getStudentsByDept,
   getStudentsByPlacementWilling,
   updateByRollno,
+  updateStudents,
   updateByStudentId,
   deleteByRollno,
   deleteByStudentId,
