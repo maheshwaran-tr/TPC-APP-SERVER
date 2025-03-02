@@ -5,7 +5,7 @@ import studentService from "../services/studentService.js";
 const genPdfAllStudents = async () => {
     const students = await studentService.getAllStudents();
     const studentHeaders = ["RollNo", "RegNo", "Name", "Department", "Email", "PhoneNo"];
-    const htmlContent = await ejs.renderFile("assets\\template.ejs", { studentHeaders, students });
+    const htmlContent = await ejs.renderFile("assets/template.ejs", { studentHeaders, students });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(htmlContent);
