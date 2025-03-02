@@ -1,5 +1,6 @@
 import companyService from "../services/companyService.js";
 
+
 const allCompanies = async (req, res, next) => {
   try {
     const companies = await companyService.getAllCompanies();

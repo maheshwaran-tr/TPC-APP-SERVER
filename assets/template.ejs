@@ -80,25 +80,22 @@
     <table>
         <thead>
             <tr>
-                <th>RollNo</th>
-                <th>RegNo</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Email</th>
-                <th>PhoneNo</th>
+                <% studentHeaders.forEach(header => { %>
+                    <th><%= header %></th>
+                <% }); %>
             </tr>
         </thead>
         <tbody>
-            <% students.forEach(student => { %>
-                <tr>
-                    <td><%= student.rollno %></td>
-                    <td><%= student.regno %></td>
-                    <td><%= student.name %></td>
-                    <td><%= student.department.name %></td>
-                    <td><%= student.email %></td>
-                    <td><%= student.phone_number %></td>
-                </tr>
-            <% }); %>
+                    <% students.forEach(student => { %>
+                        <tr>
+                            <td><%= student.rollno %></td>
+                            <td><%= student.regno %></td>
+                            <td><%= student.name %></td>
+                            <td><%= student.department.name %></td>
+                            <td><%= student.email %></td>
+                            <td><%= student.phone_number %></td>
+                        </tr>
+                    <% }); %>
         </tbody>
     </table>
 
