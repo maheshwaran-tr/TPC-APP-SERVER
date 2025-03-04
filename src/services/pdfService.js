@@ -7,7 +7,7 @@ const genPdfAllStudents = async () => {
     const studentHeaders = ["RollNo", "RegNo", "Name", "Department", "Email", "PhoneNo"];
     const htmlContent = await ejs.renderFile("assets/template.ejs", { studentHeaders, students });
     const browser = await puppeteer.launch({
-        executablePath: "/usr/bin/google-chrome", // Path where Chrome is installed in Render
+        headless: "new",
         args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
     

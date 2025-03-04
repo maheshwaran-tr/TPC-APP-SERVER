@@ -26,7 +26,7 @@ const emailAllStudents = async (req, res, next) => {
         },
         {
           filename: "all_students.xlsx", // Name of the attachment
-          content: pdfBuffer, // PDF buffer as attachment content
+          content: excelBuffer, // PDF buffer as attachment content
           contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         }
       ],
