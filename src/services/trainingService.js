@@ -90,42 +90,93 @@ const deleteTraining = async (id) => {
   }
 };
 
+// const updateAttandance = async (attendances) => {
+//   console.log(attendances);
+//   try {
+//     // Use Promise.all to handle all attendance records concurrently
+//     const updatedAttendances = await Promise.all(
+//       attendances.map(async (attendance) => {
+//         const { training_id, student_id,training_date, status } = attendance;
+
+//         // Check if the attendance record already exists
+//         const existingAttendance = await prisma.training_attendance.findFirst({
+//           where: {
+//             training_id,
+//             student_id,
+//             training_date: {
+//               equals: new Date(training_date).setHours(0, 0, 0, 0), // Normalize to start of the day
+//             },
+//           },
+//         });
+
+//         if (existingAttendance) {
+//           // Update the existing record
+//           return await prisma.training_attendance.update({
+//             where: {
+//               attendance_id: existingAttendance.attendance_id, // Use the unique attendance_id to update
+//             },
+//             data: {
+//               status, // Update the status
+//             },
+//           });
+//         } else {
+//           // Insert a new record
+//           return await prisma.training_attendance.create({
+//             data: {
+//               training_id,
+//               student_id,
+//               training_date,
+//               status,
+//             },
+//           });
+//         }
+//       })
+//     );
+
+//     return updatedAttendances; // Return the list of updated or inserted attendances
+//   } catch (error) {
+//     throw new Error(error.message);
+//   }
+// };
+
 const updateAttandance = async (attendances) => {
   console.log(attendances);
   try {
-    // Use Promise.all to handle all attendance records concurrently
     const updatedAttendances = await Promise.all(
       attendances.map(async (attendance) => {
-        const { training_id, student_id,training_date, status } = attendance;
+        const { training_id, student_id, training_date, status } = attendance;
 
-        // Check if the attendance record already exists
+        const normalizedDate = new Date(training_date);
+        normalizedDate.setHours(0, 0, 0, 0); // Ensure it's only the date
+
+        // Check if attendance already exists (ignoring time)
         const existingAttendance = await prisma.training_attendance.findFirst({
           where: {
             training_id,
             student_id,
-            training_date: {
-              equals: new Date(training_date).setHours(0, 0, 0, 0), // Normalize to start of the day
-            },
+          },
+          orderBy: {
+            training_date: "desc",
           },
         });
 
-        if (existingAttendance) {
-          // Update the existing record
+        if (
+          existingAttendance &&
+          existingAttendance.training_date.toISOString().split("T")[0] ===
+            normalizedDate.toISOString().split("T")[0] // Compare only the date part
+        ) {
           return await prisma.training_attendance.update({
             where: {
-              attendance_id: existingAttendance.attendance_id, // Use the unique attendance_id to update
+              attendance_id: existingAttendance.attendance_id,
             },
-            data: {
-              status, // Update the status
-            },
+            data: { status },
           });
         } else {
-          // Insert a new record
           return await prisma.training_attendance.create({
             data: {
               training_id,
               student_id,
-              training_date,
+              training_date: normalizedDate, // Store without time
               status,
             },
           });
@@ -133,11 +184,13 @@ const updateAttandance = async (attendances) => {
       })
     );
 
-    return updatedAttendances; // Return the list of updated or inserted attendances
+    return updatedAttendances;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error updating attendance:", error);
+    throw new Error("Failed to update attendance. Please try again.");
   }
 };
+
 
 export default {
   getAllTrainings,
