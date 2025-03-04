@@ -6,7 +6,12 @@ const genPdfAllStudents = async () => {
     const students = await studentService.getAllStudents();
     const studentHeaders = ["RollNo", "RegNo", "Name", "Department", "Email", "PhoneNo"];
     const htmlContent = await ejs.renderFile("assets/template.ejs", { studentHeaders, students });
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        executablePath: "/usr/bin/google-chrome", // Path where Chrome is installed in Render
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    
+    
     const page = await browser.newPage();
     await page.setContent(htmlContent);
     const pdfBuffer = await page.pdf({
